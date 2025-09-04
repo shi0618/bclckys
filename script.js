@@ -227,15 +227,43 @@ function resetGame(){
 }
 
 // --------------------- キー操作 ---------------------
-document.addEventListener('keydown', e=>{
-    if(isGameOver || isPaused) return;
-    switch(e.key){
-        case 'ArrowLeft': currentBlock.x--; if(collide(board,currentBlock)) currentBlock.x++; break;
-        case 'ArrowRight': currentBlock.x++; if(collide(board,currentBlock)) currentBlock.x--; break;
-        case 'ArrowDown': currentBlock.y++; if(collide(board,currentBlock)){currentBlock.y--; fixBlock();} dropCounter=0; break;
-        case 'ArrowUp': const rotated=rotate(currentBlock.matrix); const prev=currentBlock.matrix; currentBlock.matrix=rotated; if(collide(board,currentBlock)) currentBlock.matrix=prev; break;
-        case ' ': hardDrop(); dropCounter=0; break;
-        case 'p': togglePause(); break;
+// canvasをフォーカス可能にしてキー操作を設定
+canvas.tabIndex = 0; // canvasにフォーカスを当てられるようにする
+canvas.focus(); // 最初にフォーカスを当てておく（任意）
+
+canvas.addEventListener('keydown', e => {
+    if (isGameOver || isPaused) return;
+
+    switch (e.key) {
+        case 'ArrowLeft':
+            currentBlock.x--;
+            if (collide(board, currentBlock)) currentBlock.x++;
+            break;
+        case 'ArrowRight':
+            currentBlock.x++;
+            if (collide(board, currentBlock)) currentBlock.x--;
+            break;
+        case 'ArrowDown':
+            currentBlock.y++;
+            if (collide(board, currentBlock)) {
+                currentBlock.y--;
+                fixBlockOnBoard();
+            }
+            dropCounter = 0;
+            break;
+        case 'ArrowUp':
+            const rotated = rotateBlock(currentBlock.matrix);
+            const prev = currentBlock.matrix;
+            currentBlock.matrix = rotated;
+            if (collide(board, currentBlock)) currentBlock.matrix = prev;
+            break;
+        case ' ':
+            hardDrop();
+            dropCounter = 0;
+            break;
+        case 'p':
+            togglePause();
+            break;
     }
 });
 
