@@ -464,10 +464,18 @@ document.querySelectorAll('.mode-button').forEach(button => {
     });
 });
 
-backButton.addEventListener('click', showStartScreen);
-resumeButton.addEventListener('click', togglePause);
-homeButton.addEventListener('click', showStartScreen);
-pauseButton.addEventListener('click', togglePause);
+document.querySelectorAll('.back-button').forEach(btn => {
+    btn.addEventListener('click', showStartScreen);
+});
+document.querySelectorAll('.resume-button').forEach(btn => {
+    btn.addEventListener('click', togglePause);
+});
+document.querySelectorAll('.home-button').forEach(btn => {
+    btn.addEventListener('click', showStartScreen);
+});
+document.querySelectorAll('.pause-button').forEach(btn => {
+    btn.addEventListener('click', () => togglePause());
+});
 
 document.querySelectorAll('.control-button').forEach(button => {
     const key = button.dataset.key;
