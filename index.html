@@ -9,36 +9,41 @@
 <body>
   <!-- ホーム画面 -->
 <div class="homeScreen">
-  <h1>テトリス</h1>
-  <button class="soloBtn">ソロ</button>
-  <button class="multiBtn">マルチ</button>
+  <h1>ミニテトリス</h1>
+  <div class="mode-buttons">
+    <button class="soloBtn">ソロ</button>
+    <button class="multiBtn">マルチ</button>
+  </div>
 </div>
 
   <!-- スコア表示 -->
   <div class="score">スコア: <span id="score">0</span></div>
 
   <!-- ゲーム画面 -->
-<div class="gameScreen" style="display:none;">
-  <canvas class="gameCanvas"></canvas>
-  <button class="menuBtn">メニュー</button>
-</div>
-
-    <!-- 操作ボタン（ゲーム内専用） -->
+<div class="gameScreen">
+  <div class="game-wrapper">
+    <canvas id="tetris" width="240" height="480"></canvas>
+    <div class="game-info">
+        <canvas id="next-blocks" width="100" height="240"></canvas>
+    </div>
+  </div>
+    <!-- ゲーム内操作ボタン -->
     <div id="game-controls">
       <button class="control-button" data-key="ArrowLeft">←</button>
       <button class="control-button" data-key="ArrowDown">↓</button>
       <button class="control-button" data-key="ArrowRight">→</button>
+      <button class="control-button" data-key="ArrowUp">↑</button>
       <button class="control-button" data-key="Space">↻</button>
       <button class="pause-button">||</button>
     </div>
-  </div>
+</div>
 
   <!-- ポーズメニュー -->
   <div id="pause-menu">
     <div class="menu-content">
       <p>一時停止中</p>
       <button class="resume-button">続ける</button>
-      <button class="home-button">ホームに戻る</button>
+      <button class="home-button">ホームへ</button>
     </div>
   </div>
 
@@ -50,6 +55,6 @@
     </div>
   </div>
 
-  <script src="script.js" defer></script>
+  <script src="script.js"></script>
 </body>
 </html>
