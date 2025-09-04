@@ -226,6 +226,52 @@ function resetGame(){
     update();
 }
 
+// --------------------- ボタン操作 ---------------------
+document.querySelectorAll('.mode-button').forEach(button => {
+    button.addEventListener('click', () => {
+        const mode = button.dataset.mode;
+        if (mode === 'solo') {
+            console.log('ソロボタン押された'); // デバッグ用
+            showGame();
+        } else if (mode === 'multi') {
+            console.log('マルチボタン押された'); // デバッグ用
+            showMessage('開発中です');
+        }
+    });
+});
+
+document.querySelectorAll('.back-button').forEach(button => {
+    button.addEventListener('click', showStartScreen);
+});
+document.querySelectorAll('.resume-button').forEach(button => {
+    button.addEventListener('click', togglePause);
+});
+document.querySelectorAll('.home-button').forEach(button => {
+    button.addEventListener('click', showStartScreen);
+});
+document.querySelectorAll('.pause-button').forEach(button => {
+    button.addEventListener('click', togglePause);
+});
+
+document.querySelectorAll('.control-button').forEach(button => {
+    const key = button.dataset.key;
+
+    if (key === 'Enter') {
+        button.addEventListener('click', () => hardDrop());
+        return;
+    }
+    if (key === 'Reset') {
+        button.addEventListener('click', () => resetGame());
+        return;
+    }
+    if (key === 'Pause') {
+        button.addEventListener('click', () => togglePause());
+        return;
+    }
+
+    button.addEventListener('click', () => handleButtonAction(key));
+});
+
 // --------------------- キー操作 ---------------------
 // canvasをフォーカス可能にしてキー操作を設定
 document.addEventListener('keydown', e => {
