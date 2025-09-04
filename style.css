@@ -1,6 +1,6 @@
 body {
     background-color: #2c3e50;
-    font-family: 'Arial', sans-serif;
+    font-family: Arial, sans-serif;
     color: #ecf0f1;
     display: flex;
     justify-content: center;
@@ -8,134 +8,40 @@ body {
     flex-direction: column;
     min-height: 100vh;
     margin: 0;
-    position: relative;
     user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-tap-highlight-color: transparent;
 }
-h1 {
-    font-size: 2em;
-    margin-bottom: 10px;
-}
-.score {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-    display: none; /* JSで表示・非表示を制御 */
-}
-.game-container {
-    display: none; /* JSで表示・非表示を制御 */
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-.game-wrapper {
-    display: flex;
-    gap: 20px;
-}
-canvas {
-    border: 3px solid #34495e;
-    background-color: #111;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-.controls {
-    margin-top: 20px;
-}
-.control-button, .mode-button, #back-button, #resume-button, #home-button {
-    font-size: 24px;
-    padding: 15px 25px;
+
+h1, h2, h3 { margin: 10px 0; text-align: center; }
+
+.score { font-size: 1.5em; margin-bottom: 10px; display: none; }
+
+.game-container { display: none; flex-direction: column; align-items: center; gap: 20px; }
+
+.game-wrapper { display: flex; gap: 20px; }
+
+canvas { border: 3px solid #34495e; background-color: #111; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+
+.control-button, .mode-button, #back-button, #resume-button, #home-button, #pause-button {
+    font-size: 18px;
+    padding: 10px 15px;
     margin: 5px;
     background-color: #3498db;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-tap-highlight-color: transparent;
 }
-.control-button:active, .mode-button:active, #back-button:active, #resume-button:active, #home-button:active {
+
+.control-button:active, .mode-button:active, #back-button:active, #resume-button:active, #home-button:active, #pause-button:active {
     background-color: #2980b9;
 }
-.reset-control {
-    margin-top: 20px;
-}
-#start-screen {
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.mode-buttons {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-}
-#message-overlay, #pause-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: none; /* JSで表示・非表示を制御 */
-    justify-content: center;
-    align-items: center;
-    z-index: 10;
-}
-.menu-content, .message-content {
-    background: #34495e;
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-}
-#message-text, .menu-content p {
-    font-size: 2em;
-    margin-bottom: 20px;
-}
-.side-panel {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-#next-blocks {
-    border: 3px solid #34495e;
-    background-color: #111;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-#next-title {
-    display: none; /* JSで表示・非表示を制御 */
-}
-#pause-button {
-    width: 50px;
-    height: 50px;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background-color: #3498db;
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-tap-highlight-color: transparent;
-}
-#pause-button .bar {
-    width: 30px;
-    height: 4px;
-    background-color: white;
-    margin: 3px 0;
-    border-radius: 2px;
-}
-#game-controls {
-    display: none; /* JSで表示・非表示を制御 */
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
+
+#pause-button { width: 50px; height: 50px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+
+#pause-button .bar { width: 30px; height: 4px; background-color: white; margin: 3px 0; border-radius: 2px; }
+
+.mode-buttons { display: flex; justify-content: center; gap: 20px; }
+
+#message-overlay, #pause-menu { position: fixed; top:0; left:0; width:100%; height:100%; display: none; justify-content: center; align-items: center; background-color: rgba(0,0,0,0.8); z-index: 10; }
+
+.menu-content, .message-content { background: #34495e; padding: 20px; border-radius: 10px; text-align: center; }

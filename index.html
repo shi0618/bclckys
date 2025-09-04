@@ -1,39 +1,64 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="ja">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Hiragino Mincho ProN'; -webkit-text-stroke: #000000}
-    p.p5 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px 'Hiragino Sans'; color: #000000; color: rgba(0, 0, 0, 0.85); -webkit-text-stroke: rgba(0, 0, 0, 0.85)}
-    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 11.0px 'Helvetica Neue'; color: #000000; color: rgba(0, 0, 0, 0.85); -webkit-text-stroke: rgba(0, 0, 0, 0.85); min-height: 13.0px}
-    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Hiragino Mincho ProN'; color: #000000; color: rgba(0, 0, 0, 0.85); -webkit-text-stroke: rgba(0, 0, 0, 0.85)}
-    p.p8 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px 'Hiragino Mincho ProN'; -webkit-text-stroke: #000000}
-    span.s1 {font-kerning: none}
-    span.s2 {font-kerning: none; background-color: #b3b3b3}
-    span.s3 {font: 12.0px 'Hiragino Mincho ProN'; font-kerning: none; color: #000000; -webkit-text-stroke: 0px #000000}
-    span.s4 {font: 11.0px 'Helvetica Neue'; font-kerning: none; background-color: #b3b3b3}
-    span.s5 {font-kerning: none; color: #000000; -webkit-text-stroke: 0px #000000}
-    span.s6 {font: 11.0px 'Hiragino Sans'; font-kerning: none; background-color: #b3b3b3}
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ミニテトリス</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'Hiragino Mincho ProN'; -webkit-text-stroke: #000000"><span class="s1"><b>ミニテトリス</b></span></h1>
-<p class="p2"><span class="s1">スコア: 0</span></p>
-<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px 'Hiragino Mincho ProN'; -webkit-text-stroke: #000000"><span class="s1"><b>NEXT</b></span></h3>
-<h2 style="margin: 0.0px 0.0px 14.9px 0.0px; font: 18.0px 'Hiragino Mincho ProN'; -webkit-text-stroke: #000000"><span class="s1"><b>モード選択</b></span></h2>
-<p class="p5"><span class="s2">ソロ</span><span class="s3"> </span><span class="s2">マルチ</span></p>
-<p class="p6"><span class="s1"></span><br></p>
-<p class="p6"><span class="s1"></span><br></p>
-<p class="p6"><span class="s1"></span><br></p>
-<p class="p7"><span class="s4">←</span><span class="s5"> </span><span class="s4">↓</span><span class="s5"> </span><span class="s4">→</span><span class="s5"> </span><span class="s4">↻</span><span class="s5"> </span><span class="s6">決定</span></p>
-<p class="p5"><span class="s2">リセット</span></p>
-<p class="p8"><span class="s1">一時停止中</span></p>
-<p class="p5"><span class="s2">続ける</span><span class="s3"> </span><span class="s2">ホームに戻る</span></p>
-<p class="p8"><span class="s1">開発中です</span></p>
-<p class="p5"><span class="s2">戻る</span></p>
+  <div id="start-screen">
+    <h1>ミニテトリス</h1>
+    <h2>モード選択</h2>
+    <div class="mode-buttons">
+      <button class="mode-button" data-mode="solo">ソロ</button>
+      <button class="mode-button" data-mode="multi">マルチ</button>
+    </div>
+  </div>
+
+  <div class="score">スコア: <span id="score">0</span></div>
+
+  <div class="game-container">
+    <div class="game-wrapper">
+      <canvas id="tetris" width="240" height="480"></canvas>
+      <div class="side-panel">
+        <h3 id="next-title">NEXT</h3>
+        <canvas id="next-blocks" width="120" height="160"></canvas>
+      </div>
+    </div>
+
+    <div id="game-controls">
+      <button class="control-button" data-key="ArrowLeft">←</button>
+      <button class="control-button" data-key="ArrowDown">↓</button>
+      <button class="control-button" data-key="ArrowRight">→</button>
+      <button class="control-button" data-key="Space">↻</button>
+      <button id="pause-button">
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </button>
+      <button class="control-button" data-key="Reset">リセット</button>
+      <button class="control-button" data-key="Enter">決定</button>
+      <button id="back-button">戻る</button>
+      <button id="resume-button">続ける</button>
+      <button id="home-button">ホームに戻る</button>
+    </div>
+  </div>
+
+  <div id="message-overlay">
+    <div class="message-content">
+      <p id="message-text"></p>
+      <button id="back-button">戻る</button>
+    </div>
+  </div>
+
+  <div id="pause-menu">
+    <div class="menu-content">
+      <p>一時停止中</p>
+      <button id="resume-button">続ける</button>
+      <button id="home-button">ホームに戻る</button>
+    </div>
+  </div>
+
+  <script src="tetris.js"></script>
 </body>
 </html>
