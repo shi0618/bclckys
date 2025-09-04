@@ -8,47 +8,50 @@
 </head>
 <body>
   <!-- ホーム画面 -->
-<div class="homeScreen">
-  <h1>ミニテトリス</h1>
-  <div class="mode-buttons">
-    <button class="mode-button soloBtn">ソロ</button>
-    <button class="mode-button multiBtn">マルチ</button>
-  </div>
-</div>
-
-  <!-- スコア表示 -->
-  <div class="score">スコア: <span id="score">0</span></div>
-
-  <!-- ゲーム画面 -->
-<div class="gameScreen" style="display:none;">
-  <div class="game-wrapper">
-    <canvas id="tetris" width="240" height="480"></canvas>
-    <div class="game-info">
-        <canvas id="next-blocks" width="100" height="240"></canvas>
+  <div class="homeScreen">
+    <h1>ミニテトリス</h1>
+    <div class="mode-buttons">
+      <button class="mode-button soloBtn">ソロ</button>
+      <button class="mode-button multiBtn">マルチ</button>
     </div>
   </div>
+
+  <!-- ゲーム画面 -->
+  <div class="gameScreen hidden">
+    <div class="game-controls-top">
+      <button class="pause-button menu-btn">メニュー</button>
+      <div class="game-info">
+        <div class="score">スコア: <span id="score">0</span></div>
+        <canvas id="next-blocks" width="100" height="240"></canvas>
+      </div>
+    </div>
+
+    <div class="game-wrapper">
+      <canvas id="tetris" width="240" height="480"></canvas>
+    </div>
+
     <!-- ゲーム内操作ボタン -->
     <div id="game-controls">
       <button class="control-button" data-key="ArrowLeft">←</button>
       <button class="control-button" data-key="ArrowDown">↓</button>
       <button class="control-button" data-key="ArrowRight">→</button>
-      <button class="control-button" data-key="ArrowUp">↑</button>
-      <button class="control-button" data-key="Space">↻</button>
-      <button class="pause-button">||</button>
+      <button class="control-button" data-key="ArrowUp">決定</button>
+      <button class="control-button" data-key="Space">ハードドロップ</button>
     </div>
-</div>
+  </div>
 
   <!-- ポーズメニュー -->
-  <div id="pause-menu">
+  <div id="pause-menu" class="hidden">
     <div class="menu-content">
       <p>一時停止中</p>
       <button class="resume-button">続ける</button>
+      <button class="reset-button">リセット</button>
       <button class="home-button">ホームへ</button>
     </div>
   </div>
 
   <!-- メッセージオーバーレイ -->
-  <div id="message-overlay">
+  <div id="message-overlay" class="hidden">
     <div class="message-content">
       <p id="message-text"></p>
       <button class="overlay-back-button">戻る</button>
