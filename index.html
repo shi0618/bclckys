@@ -8,27 +8,20 @@
 </head>
 <body>
   <!-- ホーム画面 -->
-  <div id="start-screen">
-    <h1>ミニテトリス</h1>
-    <h2>モード選択</h2>
-    <div class="mode-buttons">
-      <button class="mode-button" data-mode="solo">ソロ</button>
-      <button class="mode-button" data-mode="multi">マルチ</button>
-    </div>
-  </div>
+<div class="homeScreen">
+  <h1>テトリス</h1>
+  <button class="soloBtn">ソロ</button>
+  <button class="multiBtn">マルチ</button>
+</div>
 
   <!-- スコア表示 -->
   <div class="score">スコア: <span id="score">0</span></div>
 
   <!-- ゲーム画面 -->
-  <div class="game-container">
-    <div class="game-wrapper">
-      <canvas id="tetris" width="240" height="480"></canvas>
-      <div class="side-panel">
-        <h3 id="next-title">NEXT</h3>
-        <canvas id="next-blocks" width="120" height="160"></canvas>
-      </div>
-    </div>
+<div class="gameScreen" style="display:none;">
+  <canvas class="gameCanvas"></canvas>
+  <button class="menuBtn">メニュー</button>
+</div>
 
     <!-- 操作ボタン（ゲーム内専用） -->
     <div id="game-controls">

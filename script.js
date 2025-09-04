@@ -313,3 +313,30 @@ document.addEventListener('keydown', e => {
 // --------------------- ゲーム開始 ---------------------
 currentBlock = getNextBlock();
 update();
+
+// --------------------- 画面切り替え ---------------------
+function showGame() {
+    document.querySelector(".homeScreen").style.display = "none";
+    document.querySelector(".gameScreen").style.display = "block";
+    resetGame(); // ←ゲームを開始する処理
+}
+
+function showHome() {
+    document.querySelector(".homeScreen").style.display = "block";
+    document.querySelector(".gameScreen").style.display = "none";
+}
+
+function showMessage(msg) {
+    alert(msg); // とりあえず簡易表示
+}
+
+// ボタンイベント
+document.querySelector(".soloBtn").addEventListener("click", () => {
+    console.log("ソロボタン押された");
+    showGame();
+});
+
+document.querySelector(".multiBtn").addEventListener("click", () => {
+    console.log("マルチボタン押された");
+    showMessage("マルチプレイは準備中！");
+});
