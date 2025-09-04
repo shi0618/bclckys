@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- ホーム画面 -->
   <div id="start-screen">
     <h1>ミニテトリス</h1>
     <h2>モード選択</h2>
@@ -16,8 +17,10 @@
     </div>
   </div>
 
+  <!-- スコア表示 -->
   <div class="score">スコア: <span id="score">0</span></div>
 
+  <!-- ゲーム画面 -->
   <div class="game-container">
     <div class="game-wrapper">
       <canvas id="tetris" width="240" height="480"></canvas>
@@ -27,30 +30,17 @@
       </div>
     </div>
 
+    <!-- 操作ボタン（ゲーム内専用） -->
     <div id="game-controls">
       <button class="control-button" data-key="ArrowLeft">←</button>
       <button class="control-button" data-key="ArrowDown">↓</button>
       <button class="control-button" data-key="ArrowRight">→</button>
       <button class="control-button" data-key="Space">↻</button>
-      <button class="pause-button">
-        <div class="bar"></div>
-        <div class="bar"></div>
-      </button>
-      <button class="control-button" data-key="Reset">リセット</button>
-      <button class="control-button" data-key="Enter">決定</button>
-      <button class="back-button">戻る</button>
-      <button class="resume-button">続ける</button>
-      <button class="home-button">ホームに戻る</button>
+      <button class="pause-button">||</button>
     </div>
   </div>
 
-  <div id="message-overlay">
-    <div class="message-content">
-      <p id="message-text"></p>
-      <button class="back-button">戻る</button>
-    </div>
-  </div>
-
+  <!-- ポーズメニュー -->
   <div id="pause-menu">
     <div class="menu-content">
       <p>一時停止中</p>
@@ -58,6 +48,15 @@
       <button class="home-button">ホームに戻る</button>
     </div>
   </div>
+
+  <!-- メッセージオーバーレイ -->
+  <div id="message-overlay">
+    <div class="message-content">
+      <p id="message-text"></p>
+      <button class="overlay-back-button">戻る</button>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
 </body>
-   <script src="script.js" defer></script>
 </html>

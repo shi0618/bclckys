@@ -21,7 +21,7 @@ h1, h2, h3 { margin: 10px 0; text-align: center; }
 
 canvas { border: 3px solid #34495e; background-color: #111; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
 
-.control-button, .mode-button, #back-button, #resume-button, #home-button, #pause-button {
+.control-button, .mode-button, .resume-button, .home-button, .pause-button, .overlay-back-button {
     font-size: 18px;
     padding: 10px 15px;
     margin: 5px;
@@ -32,13 +32,11 @@ canvas { border: 3px solid #34495e; background-color: #111; box-shadow: 0 0 10px
     cursor: pointer;
 }
 
-.control-button:active, .mode-button:active, #back-button:active, #resume-button:active, #home-button:active, #pause-button:active {
+.control-button:active, .mode-button:active, .resume-button:active, .home-button:active, .pause-button:active, .overlay-back-button:active {
     background-color: #2980b9;
 }
 
-#pause-button { width: 50px; height: 50px; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-
-#pause-button .bar { width: 30px; height: 4px; background-color: white; margin: 3px 0; border-radius: 2px; }
+.pause-button { width: 50px; height: 50px; display: flex; justify-content: center; align-items: center; }
 
 .mode-buttons { display: flex; justify-content: center; gap: 20px; }
 
