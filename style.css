@@ -30,8 +30,12 @@ canvas { border: 3px solid #34495e; background-color: #111; box-shadow: 0 0 10px
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
+.control-button:hover, .mode-button:hover, .resume-button:hover, .home-button:hover, .pause-button:hover, .overlay-back-button:hover {
+    background-color: #2980b9;
+}
 .control-button:active, .mode-button:active, .resume-button:active, .home-button:active, .pause-button:active, .overlay-back-button:active {
     background-color: #2980b9;
 }
@@ -40,6 +44,23 @@ canvas { border: 3px solid #34495e; background-color: #111; box-shadow: 0 0 10px
 
 .mode-buttons { display: flex; justify-content: center; gap: 20px; }
 
-#message-overlay, #pause-menu { position: fixed; top:0; left:0; width:100%; height:100%; display: none; justify-content: center; align-items: center; background-color: rgba(0,0,0,0.8); z-index: 10; }
+#message-overlay, #pause-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.8);
+    z-index: 10;
+}
 
-.menu-content, .message-content { background: #34495e; padding: 20px; border-radius: 10px; text-align: center; }
+.menu-content, .message-content {
+    background: #34495e;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}

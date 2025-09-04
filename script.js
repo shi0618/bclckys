@@ -1,12 +1,18 @@
-// --------------------- DOM ---------------------
+// --------------------- DOM Elements ---------------------
 const canvas = document.getElementById('tetris');
 const context = canvas.getContext('2d');
 const nextCanvas = document.getElementById('next-blocks');
 const nextContext = nextCanvas.getContext('2d');
 const scoreElement = document.getElementById('score');
 const pauseMenu = document.getElementById('pause-menu');
+const messageOverlay = document.getElementById('message-overlay');
+const messageText = document.getElementById('message-text');
+const homeScreen = document.querySelector(".homeScreen");
+const gameScreen = document.querySelector(".gameScreen");
+const scoreDisplay = document.querySelector(".score");
+const controls = document.getElementById('game-controls');
 
-// --------------------- 定数 ---------------------
+// --------------------- Constants ---------------------
 const BLOCK_SIZE = 20;
 const COLS = 12;
 const ROWS = 24;
@@ -14,7 +20,7 @@ const INITIAL_DROP_INTERVAL = 1000;
 const DROP_SPEED_INCREMENT = 20;
 const MIN_DROP_INTERVAL = 100;
 
-// --------------------- ゲーム状態 ---------------------
+// --------------------- Game State ---------------------
 let board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
 let score = 0;
 let isGameOver = false;
@@ -24,7 +30,7 @@ let dropInterval = INITIAL_DROP_INTERVAL;
 let lastTime = 0;
 let animationFrameId;
 
-// --------------------- テトリミノ ---------------------
+// --------------------- Tetrominos ---------------------
 const tetrominos = [
   {matrix:[[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]], color:'cyan'},
   {matrix:[[1,1],[1,1]], color:'yellow'},
@@ -35,12 +41,11 @@ const tetrominos = [
   {matrix:[[0,1,1],[1,1,0],[0,0,0]], color:'green'}
 ];
 
-// --------------------- ブロック管理 ---------------------
+// --------------------- Block Management ---------------------
 let currentBlock = null;
 let nextBlocks = [];
 let lastUsedIndex = -1;
 
-// --------------------- ヘルパー ---------------------
 function createRandomBlock(){
     let index;
     do { index = Math.floor(Math.random()*tetrominos.length); }
@@ -114,7 +119,7 @@ function hardDrop(){
     fixBlock();
 }
 
-// --------------------- 描画 ---------------------
+// --------------------- Drawing ---------------------
 function drawBoard(){
     context.fillStyle='#111';
     context.fillRect(0,0,canvas.width,canvas.height);
@@ -152,6 +157,7 @@ function drawBoard(){
 }
 
 function drawNext(){
+    if (nextBlocks.length === 0) return;
     nextContext.fillStyle='#111';
     nextContext.fillRect(0,0,nextCanvas.width,nextCanvas.height);
     const spacing = 20;
@@ -173,7 +179,7 @@ function drawNext(){
     }
 }
 
-// --------------------- 更新 ---------------------
+// --------------------- Update Loop ---------------------
 function update(time=0){
     if(isGameOver || isPaused) return;
     const deltaTime = time - lastTime;
@@ -192,12 +198,16 @@ function update(time=0){
     animationFrameId = requestAnimationFrame(update);
 }
 
-// --------------------- ポーズ・ゲームオーバー ---------------------
+// --------------------- Pause & Game Over ---------------------
 function togglePause(){
     isPaused = !isPaused;
-    pauseMenu.style.display = isPaused ? 'flex' : 'none';
-    if(isPaused) cancelAnimationFrame(animationFrameId);
-    else update();
+    if(isPaused){
+        pauseMenu.style.display = 'flex';
+        cancelAnimationFrame(animationFrameId);
+    } else {
+        pauseMenu.style.display = 'none';
+        update();
+    }
 }
 
 function gameOver(){
@@ -212,7 +222,12 @@ function gameOver(){
     setTimeout(resetGame,3000);
 }
 
-// --------------------- リセット ---------------------
+function showMessage(msg) {
+    messageText.textContent = msg;
+    messageOverlay.style.display = 'flex';
+}
+
+// --------------------- Reset Game ---------------------
 function resetGame(){
     isGameOver=false;
     isPaused=false;
@@ -226,57 +241,63 @@ function resetGame(){
     update();
 }
 
-// --------------------- ボタン操作 ---------------------
-document.querySelectorAll('.mode-button').forEach(button => {
+// --------------------- Screen Transitions ---------------------
+function showGameScreen() {
+    homeScreen.style.display = 'none';
+    gameScreen.style.display = 'flex';
+    scoreDisplay.style.display = 'block';
+    controls.style.display = 'flex';
+    resetGame();
+}
+
+function showHomeScreen() {
+    homeScreen.style.display = 'flex';
+    gameScreen.style.display = 'none';
+    scoreDisplay.style.display = 'none';
+    controls.style.display = 'none';
+    cancelAnimationFrame(animationFrameId);
+}
+
+// --------------------- Event Handlers ---------------------
+document.querySelector(".soloBtn").addEventListener("click", showGameScreen);
+document.querySelector(".multiBtn").addEventListener("click", () => {
+    showMessage("マルチプレイは準備中！");
+});
+document.querySelector(".overlay-back-button").addEventListener("click", () => {
+    messageOverlay.style.display = 'none';
+});
+document.querySelector(".resume-button").addEventListener("click", togglePause);
+document.querySelector(".home-button").addEventListener("click", showHomeScreen);
+document.querySelector(".pause-button").addEventListener("click", togglePause);
+document.querySelectorAll('.control-button').forEach(button => {
     button.addEventListener('click', () => {
-        const mode = button.dataset.mode;
-        if (mode === 'solo') {
-            console.log('ソロボタン押された'); // デバッグ用
-            showGame();
-        } else if (mode === 'multi') {
-            console.log('マルチボタン押された'); // デバッグ用
-            showMessage('開発中です');
+        if(isGameOver || isPaused) return;
+        switch (button.dataset.key) {
+            case 'ArrowLeft':
+                currentBlock.x--;
+                if (collide(board, currentBlock)) currentBlock.x++;
+                break;
+            case 'ArrowRight':
+                currentBlock.x++;
+                if (collide(board, currentBlock)) currentBlock.x--;
+                break;
+            case 'ArrowDown':
+                currentBlock.y++;
+                if (collide(board, currentBlock)) {
+                    currentBlock.y--;
+                    fixBlock();
+                }
+                dropCounter = 0;
+                break;
+            case 'Space':
+                hardDrop();
+                dropCounter = 0;
+                break;
         }
     });
 });
-
-document.querySelectorAll('.back-button').forEach(button => {
-    button.addEventListener('click', showStartScreen);
-});
-document.querySelectorAll('.resume-button').forEach(button => {
-    button.addEventListener('click', togglePause);
-});
-document.querySelectorAll('.home-button').forEach(button => {
-    button.addEventListener('click', showStartScreen);
-});
-document.querySelectorAll('.pause-button').forEach(button => {
-    button.addEventListener('click', togglePause);
-});
-
-document.querySelectorAll('.control-button').forEach(button => {
-    const key = button.dataset.key;
-
-    if (key === 'Enter') {
-        button.addEventListener('click', () => hardDrop());
-        return;
-    }
-    if (key === 'Reset') {
-        button.addEventListener('click', () => resetGame());
-        return;
-    }
-    if (key === 'Pause') {
-        button.addEventListener('click', () => togglePause());
-        return;
-    }
-
-    button.addEventListener('click', () => handleButtonAction(key));
-});
-
-// --------------------- キー操作 ---------------------
-// canvasをフォーカス可能にしてキー操作を設定
 document.addEventListener('keydown', e => {
     if (isGameOver || isPaused) return;
-
     switch (e.key) {
         case 'ArrowLeft':
             currentBlock.x--;
@@ -290,17 +311,18 @@ document.addEventListener('keydown', e => {
             currentBlock.y++;
             if (collide(board, currentBlock)) {
                 currentBlock.y--;
-                fixBlockOnBoard();
+                fixBlock();
             }
             dropCounter = 0;
             break;
         case 'ArrowUp':
-            const rotated = rotateBlock(currentBlock.matrix);
+            const rotated = rotate(currentBlock.matrix);
             const prev = currentBlock.matrix;
             currentBlock.matrix = rotated;
             if (collide(board, currentBlock)) currentBlock.matrix = prev;
             break;
         case ' ':
+            e.preventDefault(); // デフォルトのスクロールを防ぐ
             hardDrop();
             dropCounter = 0;
             break;
@@ -308,35 +330,4 @@ document.addEventListener('keydown', e => {
             togglePause();
             break;
     }
-});
-
-// --------------------- ゲーム開始 ---------------------
-currentBlock = getNextBlock();
-update();
-
-// --------------------- 画面切り替え ---------------------
-function showGame() {
-    document.querySelector(".homeScreen").style.display = "none";
-    document.querySelector(".gameScreen").style.display = "block";
-    resetGame(); // ←ゲームを開始する処理
-}
-
-function showHome() {
-    document.querySelector(".homeScreen").style.display = "block";
-    document.querySelector(".gameScreen").style.display = "none";
-}
-
-function showMessage(msg) {
-    alert(msg); // とりあえず簡易表示
-}
-
-// ボタンイベント
-document.querySelector(".soloBtn").addEventListener("click", () => {
-    console.log("ソロボタン押された");
-    showGame();
-});
-
-document.querySelector(".multiBtn").addEventListener("click", () => {
-    console.log("マルチボタン押された");
-    showMessage("マルチプレイは準備中！");
 });
