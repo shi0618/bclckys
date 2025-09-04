@@ -228,10 +228,7 @@ function resetGame(){
 
 // --------------------- キー操作 ---------------------
 // canvasをフォーカス可能にしてキー操作を設定
-canvas.tabIndex = 0; // canvasにフォーカスを当てられるようにする
-canvas.focus(); // 最初にフォーカスを当てておく（任意）
-
-canvas.addEventListener('keydown', e => {
+document.addEventListener('keydown', e => {
     if (isGameOver || isPaused) return;
 
     switch (e.key) {
