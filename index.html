@@ -4,7 +4,151 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ミニテトリス</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+        background-color: #2c3e50;
+        font-family: Arial, sans-serif;
+        color: #ecf0f1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        min-height: 100vh;
+        margin: 0;
+        user-select: none;
+    }
+
+    h1, h2, h3 { margin: 10px 0; text-align: center; }
+
+    .score {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    .homeScreen {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .gameScreen {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .game-wrapper {
+        display: flex;
+        gap: 20px;
+    }
+
+    canvas {
+        border: 3px solid #34495e;
+        background-color: #111;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        border-radius: 5px;
+    }
+
+    .control-button, .mode-button, .resume-button, .home-button, .pause-button, .overlay-back-button, .reset-button {
+        font-size: 18px;
+        padding: 10px 15px;
+        margin: 5px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .control-button:hover, .mode-button:hover, .resume-button:hover, .home-button:hover, .pause-button:hover, .overlay-back-button:hover, .reset-button:hover {
+        background-color: #2980b9;
+    }
+
+    .control-button:active, .mode-button:active, .resume-button:active, .home-button:active, .pause-button:active, .overlay-back-button:active, .reset-button:active {
+        background-color: #2980b9;
+    }
+
+    .pause-button {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .mode-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    #message-overlay, #pause-menu {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0,0,0,0.8);
+        z-index: 10;
+    }
+
+    .menu-content, .message-content {
+        background: #34495e;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    #game-controls {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        gap: 10px;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .game-controls-top {
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .game-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .hamburger-icon {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 24px;
+        height: 24px;
+    }
+
+    .hamburger-line {
+        width: 20px;
+        height: 3px;
+        background-color: white;
+        margin: 2px 0;
+        border-radius: 1px;
+    }
+  </style>
 </head>
 <body>
   <!-- ホーム画面 -->
@@ -19,15 +163,18 @@
   <!-- ゲーム画面 -->
   <div class="gameScreen hidden">
     <div class="game-controls-top">
-      <button class="pause-button menu-btn">メニュー</button>
+      <button class="pause-button menu-btn">
+        <div class="hamburger-icon">
+          <div class="hamburger-line"></div>
+          <div class="hamburger-line"></div>
+          <div class="hamburger-line"></div>
+        </div>
+      </button>
+      <canvas id="tetris" width="240" height="480"></canvas>
       <div class="game-info">
         <div class="score">スコア: <span id="score">0</span></div>
         <canvas id="next-blocks" width="100" height="240"></canvas>
       </div>
-    </div>
-
-    <div class="game-wrapper">
-      <canvas id="tetris" width="240" height="480"></canvas>
     </div>
 
     <!-- ゲーム内操作ボタン -->
@@ -35,8 +182,8 @@
       <button class="control-button" data-key="ArrowLeft">←</button>
       <button class="control-button" data-key="ArrowDown">↓</button>
       <button class="control-button" data-key="ArrowRight">→</button>
-      <button class="control-button" data-key="ArrowUp">決定</button>
-      <button class="control-button" data-key="Space">ハードドロップ</button>
+      <button class="control-button" data-key="ArrowUp">⟳</button>
+      <button class="control-button" data-key="Space">決定</button>
     </div>
   </div>
 
@@ -58,6 +205,413 @@
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    // --------------------- DOM Elements ---------------------
+    const canvas = document.getElementById('tetris');
+    const context = canvas.getContext('2d');
+    const nextCanvas = document.getElementById('next-blocks');
+    const nextContext = nextCanvas.getContext('2d');
+    const scoreElement = document.getElementById('score');
+    const pauseMenu = document.getElementById('pause-menu');
+    const messageOverlay = document.getElementById('message-overlay');
+    const messageText = document.getElementById('message-text');
+    const homeScreen = document.querySelector(".homeScreen");
+    const gameScreen = document.querySelector(".gameScreen");
+    const scoreDisplay = document.querySelector(".score");
+    const controls = document.getElementById('game-controls');
+
+    // --------------------- Constants ---------------------
+    let BLOCK_SIZE = 20;
+    const COLS = 12;
+    const ROWS = 24;
+    const INITIAL_DROP_INTERVAL = 1000;
+    const DROP_SPEED_INCREMENT = 20;
+    const MIN_DROP_INTERVAL = 100;
+
+    // --------------------- Device Detection & Sizing ---------------------
+    function getDeviceInfo() {
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        const isMobile = width <= 768;
+        const isTablet = width > 768 && width <= 1024;
+        const isDesktop = width > 1024;
+        
+        return { width, height, isMobile, isTablet, isDesktop };
+    }
+
+    function calculateOptimalSize() {
+        const deviceInfo = getDeviceInfo();
+        let optimalBlockSize = 20;
+        
+        if (deviceInfo.isMobile) {
+            // モバイル：画面幅の85%を12列で割る
+            optimalBlockSize = Math.floor((deviceInfo.width * 0.85) / COLS);
+            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 25), 15);
+        } else if (deviceInfo.isTablet) {
+            // タブレット：少し大きめ
+            optimalBlockSize = Math.floor((deviceInfo.width * 0.6) / COLS);
+            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 35), 20);
+        } else {
+            // デスクトップ：さらに大きく
+            optimalBlockSize = Math.floor((deviceInfo.height * 0.7) / ROWS);
+            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 40), 25);
+        }
+        
+        return optimalBlockSize;
+    }
+
+    function resizeCanvas() {
+        BLOCK_SIZE = calculateOptimalSize();
+        const gameWidth = COLS * BLOCK_SIZE;
+        const gameHeight = ROWS * BLOCK_SIZE;
+        
+        canvas.width = gameWidth;
+        canvas.height = gameHeight;
+        
+        // Next canvas サイズも調整
+        const nextWidth = Math.max(100, BLOCK_SIZE * 5);
+        const nextHeight = Math.max(240, BLOCK_SIZE * 12);
+        nextCanvas.width = nextWidth;
+        nextCanvas.height = nextHeight;
+        
+        console.log(`デバイス情報: ${JSON.stringify(getDeviceInfo())}`);
+        console.log(`ブロックサイズ: ${BLOCK_SIZE}px, キャンバス: ${gameWidth}x${gameHeight}`);
+    }
+
+    // --------------------- Game State ---------------------
+    let board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
+    let score = 0;
+    let isGameOver = false;
+    let isPaused = false;
+    let dropCounter = 0;
+    let dropInterval = INITIAL_DROP_INTERVAL;
+    let lastTime = 0;
+    let animationFrameId;
+
+    // --------------------- Tetrominos ---------------------
+    const tetrominos = [
+      {matrix:[[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]], color:'cyan'},
+      {matrix:[[1,1],[1,1]], color:'yellow'},
+      {matrix:[[0,1,0],[1,1,1],[0,0,0]], color:'purple'},
+      {matrix:[[0,0,1],[1,1,1],[0,0,0]], color:'orange'},
+      {matrix:[[1,0,0],[1,1,1],[0,0,0]], color:'blue'},
+      {matrix:[[1,1,0],[0,1,1],[0,0,0]], color:'red'},
+      {matrix:[[0,1,1],[1,1,0],[0,0,0]], color:'green'}
+    ];
+
+    // --------------------- Block Management ---------------------
+    let currentBlock = null;
+    let nextBlocks = [];
+    let lastUsedIndex = -1;
+
+    function createRandomBlock(){
+        let index;
+        do { index = Math.floor(Math.random()*tetrominos.length); }
+        while(index === lastUsedIndex);
+        lastUsedIndex = index;
+        const t = tetrominos[index];
+        return {matrix:t.matrix, color:t.color};
+    }
+
+    function getNextBlock(){
+        if(nextBlocks.length === 0){
+            nextBlocks.push(createRandomBlock());
+            nextBlocks.push(createRandomBlock());
+        }
+        const block = nextBlocks.shift();
+        nextBlocks.push(createRandomBlock());
+        return {
+            matrix:block.matrix,
+            color:block.color,
+            x:Math.floor(COLS/2)-Math.floor(block.matrix[0].length/2),
+            y:0
+        };
+    }
+
+    function rotate(matrix){
+        return matrix[0].map((_,i)=>matrix.map(row=>row[i]).reverse());
+    }
+
+    function collide(board, block){
+        if(!block) return false;
+        for(let y=0;y<block.matrix.length;y++){
+            for(let x=0;x<block.matrix[y].length;x++){
+                if(block.matrix[y][x] !== 0){
+                    const boardX = block.x + x;
+                    const boardY = block.y + y;
+                    if(boardX<0 || boardX>=COLS || boardY>=ROWS || (boardY>=0 && board[boardY][boardX]!==0)) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    function fixBlock(){
+        for(let y=0;y<currentBlock.matrix.length;y++){
+            for(let x=0;x<currentBlock.matrix[y].length;x++){
+                if(currentBlock.matrix[y][x]!==0){
+                    board[currentBlock.y+y][currentBlock.x+x] = currentBlock.color;
+                }
+            }
+        }
+        let linesCleared = 0;
+        for(let y=ROWS-1;y>=0;){
+            if(board[y].every(cell=>cell!==0)){
+                board.splice(y,1);
+                board.unshift(Array(COLS).fill(0));
+                linesCleared++;
+            } else y--;
+        }
+        if(linesCleared>0){
+            score += 100*linesCleared*linesCleared;
+            scoreElement.textContent = score;
+            dropInterval = Math.max(dropInterval - DROP_SPEED_INCREMENT, MIN_DROP_INTERVAL);
+        }
+        currentBlock = getNextBlock();
+        if(collide(board,currentBlock)) gameOver();
+    }
+
+    function hardDrop(){
+        while(!collide(board,currentBlock)) currentBlock.y++;
+        currentBlock.y--;
+        fixBlock();
+    }
+
+    // --------------------- Drawing ---------------------
+    function drawBoard(){
+        context.fillStyle='#111';
+        context.fillRect(0,0,canvas.width,canvas.height);
+        for(let y=0;y<ROWS;y++){
+            for(let x=0;x<COLS;x++){
+                context.strokeStyle='#34495e';
+                context.strokeRect(x*BLOCK_SIZE,y*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+                if(board[y][x]!==0){
+                    context.fillStyle=board[y][x];
+                    context.fillRect(x*BLOCK_SIZE,y*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+                    context.strokeStyle='black';
+                    context.lineWidth=2;
+                    context.strokeRect(x*BLOCK_SIZE,y*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+                }
+            }
+        }
+        const ghost = {...currentBlock};
+        while(!collide(board,ghost)) ghost.y++;
+        ghost.y--;
+        for(let y=0;y<ghost.matrix.length;y++)
+            for(let x=0;x<ghost.matrix[y].length;x++)
+                if(ghost.matrix[y][x]!==0){
+                    context.fillStyle='rgba(255,255,255,0.2)';
+                    context.fillRect((ghost.x+x)*BLOCK_SIZE,(ghost.y+y)*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+                }
+        for(let y=0;y<currentBlock.matrix.length;y++)
+            for(let x=0;x<currentBlock.matrix[y].length;x++)
+                if(currentBlock.matrix[y][x]!==0){
+                    context.fillStyle=currentBlock.color;
+                    context.fillRect((currentBlock.x+x)*BLOCK_SIZE,(currentBlock.y+y)*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+                    context.strokeStyle='black';
+                    context.lineWidth=2;
+                    context.strokeRect((currentBlock.x+x)*BLOCK_SIZE,(currentBlock.y+y)*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+                }
+    }
+
+    function drawNext(){
+        if (nextBlocks.length === 0) return;
+        nextContext.fillStyle='#111';
+        nextContext.fillRect(0,0,nextCanvas.width,nextCanvas.height);
+        const spacing = 20;
+        let currentY = spacing;
+        for(let block of nextBlocks){
+            const matrixSize = block.matrix.length === 4 ? 4 : 3;
+            const offsetX = (nextCanvas.width - matrixSize*BLOCK_SIZE)/2;
+            const offsetY = currentY;
+            for(let y=0;y<block.matrix.length;y++)
+                for(let x=0;x<block.matrix[y].length;x++)
+                    if(block.matrix[y][x]!==0){
+                        nextContext.fillStyle=block.color;
+                        nextContext.fillRect(offsetX+x*BLOCK_SIZE,offsetY+y*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+                        nextContext.strokeStyle='black';
+                        nextContext.lineWidth=2;
+                        nextContext.strokeRect(offsetX+x*BLOCK_SIZE,offsetY+y*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
+                    }
+            currentY += block.matrix.length*BLOCK_SIZE + spacing;
+        }
+    }
+
+    // --------------------- Update Loop ---------------------
+    function update(time=0){
+        if(isGameOver || isPaused) return;
+        const deltaTime = time - lastTime;
+        lastTime = time;
+        dropCounter += deltaTime;
+        if(dropCounter > dropInterval){
+            currentBlock.y++;
+            if(collide(board,currentBlock)){
+                currentBlock.y--;
+                fixBlock();
+            }
+            dropCounter=0;
+        }
+        drawBoard();
+        drawNext();
+        animationFrameId = requestAnimationFrame(update);
+    }
+
+    // --------------------- Pause & Game Over ---------------------
+    function togglePause(){
+        isPaused = !isPaused;
+        if(isPaused){
+            pauseMenu.style.display = 'flex';
+            cancelAnimationFrame(animationFrameId);
+        } else {
+            pauseMenu.style.display = 'none';
+            update();
+        }
+    }
+
+    function gameOver(){
+        isGameOver = true;
+        cancelAnimationFrame(animationFrameId);
+        context.fillStyle='rgba(0,0,0,0.7)';
+        context.fillRect(0,0,canvas.width,canvas.height);
+        context.fillStyle='white';
+        context.font='30px Arial';
+        context.textAlign='center';
+        context.fillText('ゲームオーバー',canvas.width/2,canvas.height/2);
+        setTimeout(resetGame,3000);
+    }
+
+    function showMessage(msg) {
+        messageText.textContent = msg;
+        messageOverlay.style.display = 'flex';
+    }
+
+    // --------------------- Reset Game ---------------------
+    function resetGame(){
+        isGameOver=false;
+        isPaused=false;
+        board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
+        score = 0;
+        scoreElement.textContent = score;
+        nextBlocks=[];
+        lastUsedIndex=-1;
+        dropInterval = INITIAL_DROP_INTERVAL;
+        dropCounter = 0;
+        currentBlock = getNextBlock();
+        pauseMenu.style.display = 'none';
+        messageOverlay.style.display = 'none';
+        update();
+    }
+
+    // --------------------- Screen Transitions ---------------------
+    function showGameScreen() {
+        homeScreen.style.display = 'none';
+        gameScreen.style.display = 'flex';
+        scoreDisplay.style.display = 'block';
+        controls.style.display = 'flex';
+        resizeCanvas(); // キャンバスサイズを調整
+        resetGame();
+    }
+
+    function showHomeScreen() {
+        homeScreen.style.display = 'flex';
+        gameScreen.style.display = 'none';
+        scoreDisplay.style.display = 'none';
+        controls.style.display = 'none';
+        cancelAnimationFrame(animationFrameId);
+        pauseMenu.style.display = 'none';
+        messageOverlay.style.display = 'none';
+    }
+
+    // --------------------- Event Handlers ---------------------
+    document.querySelector(".soloBtn").addEventListener("click", showGameScreen);
+    document.querySelector(".multiBtn").addEventListener("click", () => {
+        showMessage("マルチプレイは準備中！");
+    });
+
+    // --------------------- Resize Handler ---------------------
+    window.addEventListener('resize', () => {
+        if (gameScreen.style.display !== 'none') {
+            resizeCanvas();
+        }
+    });
+
+    // --------------------- Initialize ---------------------
+    resizeCanvas(); // 初期化時にサイズ調整
+    document.querySelector(".overlay-back-button").addEventListener("click", () => {
+        messageOverlay.style.display = 'none';
+    });
+    document.querySelector(".resume-button").addEventListener("click", togglePause);
+    document.querySelector(".reset-button").addEventListener("click", resetGame);
+    document.querySelector(".home-button").addEventListener("click", showHomeScreen);
+    document.querySelector(".pause-button").addEventListener("click", togglePause);
+    document.querySelectorAll('.control-button').forEach(button => {
+        button.addEventListener('click', () => {
+            if(isGameOver || isPaused) return;
+            switch (button.dataset.key) {
+                case 'ArrowLeft':
+                    currentBlock.x--;
+                    if (collide(board, currentBlock)) currentBlock.x++;
+                    break;
+                case 'ArrowRight':
+                    currentBlock.x++;
+                    if (collide(board, currentBlock)) currentBlock.x--;
+                    break;
+                case 'ArrowDown':
+                    currentBlock.y++;
+                    if (collide(board, currentBlock)) {
+                        currentBlock.y--;
+                        fixBlock();
+                    }
+                    dropCounter = 0;
+                    break;
+                case 'ArrowUp':
+                    const rotated = rotate(currentBlock.matrix);
+                    const prev = currentBlock.matrix;
+                    currentBlock.matrix = rotated;
+                    if (collide(board, currentBlock)) currentBlock.matrix = prev;
+                    break;
+                case 'Space':
+                    hardDrop();
+                    dropCounter = 0;
+                    break;
+            }
+        });
+    });
+    document.addEventListener('keydown', e => {
+        if (isGameOver || isPaused) return;
+        switch (e.key) {
+            case 'ArrowLeft':
+                currentBlock.x--;
+                if (collide(board, currentBlock)) currentBlock.x++;
+                break;
+            case 'ArrowRight':
+                currentBlock.x++;
+                if (collide(board, currentBlock)) currentBlock.x--;
+                break;
+            case 'ArrowDown':
+                currentBlock.y++;
+                if (collide(board, currentBlock)) {
+                    currentBlock.y--;
+                    fixBlock();
+                }
+                dropCounter = 0;
+                break;
+            case 'ArrowUp':
+                const rotated = rotate(currentBlock.matrix);
+                const prev = currentBlock.matrix;
+                currentBlock.matrix = rotated;
+                if (collide(board, currentBlock)) currentBlock.matrix = prev;
+                break;
+            case ' ':
+                e.preventDefault();
+                hardDrop();
+                dropCounter = 0;
+                break;
+            case 'p':
+                togglePause();
+                break;
+        }
+    });
+  </script>
 </body>
 </html>
