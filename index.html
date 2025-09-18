@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>ミニテトリス</title>
   <style>
     body {
@@ -16,6 +16,8 @@
         min-height: 100vh;
         margin: 0;
         user-select: none;
+        touch-action: manipulation; /* ダブルタップズーム無効 */
+        overflow-x: hidden; /* 横スクロール防止 */
     }
 
     h1, h2, h3 { margin: 10px 0; text-align: center; }
@@ -255,9 +257,9 @@
         let optimalBlockSize = 20;
         
         if (deviceInfo.isMobile) {
-            // モバイル：画面幅の85%を12列で割る
-            optimalBlockSize = Math.floor((deviceInfo.width * 0.85) / COLS);
-            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 25), 15);
+            // モバイル：画面幅の70%を12列で割る（小さくして余裕を持たせる）
+            optimalBlockSize = Math.floor((deviceInfo.width * 0.7) / COLS);
+            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 20), 12);
         } else if (deviceInfo.isTablet) {
             // タブレット：少し大きめ
             optimalBlockSize = Math.floor((deviceInfo.width * 0.6) / COLS);
@@ -439,50 +441,70 @@
     }
 
     function drawNextBlock(context, block, canvasWidth, canvasHeight) {
-        // 背景とグリッド
+        // 背景
         context.fillStyle = '#111';
         context.fillRect(0, 0, canvasWidth, canvasHeight);
         
+        // グリッド設定
+        const gridCols = 5; // 5x5グリッド
+        const gridRows = 5;
+        const cellWidth = canvasWidth / gridCols;
+        const cellHeight = canvasHeight / gridRows;
+        
         // グリッド線を描画
-        const gridSize = 24;
         context.strokeStyle = '#34495e';
         context.lineWidth = 1;
-        for (let x = 0; x <= canvasWidth; x += gridSize) {
+        
+        // 縦線
+        for (let i = 0; i <= gridCols; i++) {
+            const x = i * cellWidth;
             context.beginPath();
             context.moveTo(x, 0);
             context.lineTo(x, canvasHeight);
             context.stroke();
         }
-        for (let y = 0; y <= canvasHeight; y += gridSize) {
+        
+        // 横線
+        for (let i = 0; i <= gridRows; i++) {
+            const y = i * cellHeight;
             context.beginPath();
             context.moveTo(0, y);
             context.lineTo(canvasWidth, y);
             context.stroke();
         }
         
-        // ブロックを中央に配置（大きくする）
-        const matrixSize = block.matrix.length === 4 ? 4 : 3;
-        const blockDrawSize = 28; // 18 → 28に拡大
-        const offsetX = (canvasWidth - matrixSize * blockDrawSize) / 2;
-        const offsetY = (canvasHeight - matrixSize * blockDrawSize) / 2;
+        // ブロックを中央のグリッドに配置
+        const blockMatrix = block.matrix;
+        const blockCols = blockMatrix[0].length;
+        const blockRows = blockMatrix.length;
         
-        for (let y = 0; y < block.matrix.length; y++) {
-            for (let x = 0; x < block.matrix[y].length; x++) {
-                if (block.matrix[y][x] !== 0) {
+        // 中央揃えのオフセット計算
+        const startCol = Math.floor((gridCols - blockCols) / 2);
+        const startRow = Math.floor((gridRows - blockRows) / 2);
+        
+        // ブロック描画
+        for (let y = 0; y < blockRows; y++) {
+            for (let x = 0; x < blockCols; x++) {
+                if (blockMatrix[y][x] !== 0) {
+                    const drawX = (startCol + x) * cellWidth;
+                    const drawY = (startRow + y) * cellHeight;
+                    
+                    // セルの内側に少し余白を持たせて描画
+                    const padding = 2;
                     context.fillStyle = block.color;
                     context.fillRect(
-                        offsetX + x * blockDrawSize,
-                        offsetY + y * blockDrawSize,
-                        blockDrawSize,
-                        blockDrawSize
+                        drawX + padding, 
+                        drawY + padding, 
+                        cellWidth - padding * 2, 
+                        cellHeight - padding * 2
                     );
                     context.strokeStyle = 'black';
                     context.lineWidth = 2;
                     context.strokeRect(
-                        offsetX + x * blockDrawSize,
-                        offsetY + y * blockDrawSize,
-                        blockDrawSize,
-                        blockDrawSize
+                        drawX + padding, 
+                        drawY + padding, 
+                        cellWidth - padding * 2, 
+                        cellHeight - padding * 2
                     );
                 }
             }
