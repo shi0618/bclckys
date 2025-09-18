@@ -14,10 +14,14 @@
         align-items: center;
         flex-direction: column;
         min-height: 100vh;
+        max-height: 100vh;
         margin: 0;
+        padding: 0;
         user-select: none;
         touch-action: manipulation; /* ダブルタップズーム無効 */
-        overflow-x: hidden; /* 横スクロール防止 */
+        overflow: hidden; /* 全方向スクロール防止 */
+        position: fixed;
+        width: 100%;
     }
 
     h1, h2, h3 { margin: 10px 0; text-align: center; }
@@ -166,7 +170,7 @@
   <div class="gameScreen hidden">
     <div class="game-controls-top">
       <div class="game-content">
-        <canvas id="tetris" width="240" height="480"></canvas>
+        <canvas id="tetris" width="200" height="400"></canvas>
       </div>
       <div class="game-info">
         <button class="pause-button menu-btn">
@@ -235,8 +239,8 @@
 
     // --------------------- Constants ---------------------
     let BLOCK_SIZE = 20;
-    const COLS = 12;
-    const ROWS = 24;
+    const COLS = 10; // 12 → 10に変更
+    const ROWS = 20; // 24 → 20に変更
     const INITIAL_DROP_INTERVAL = 1000;
     const DROP_SPEED_INCREMENT = 20;
     const MIN_DROP_INTERVAL = 100;
@@ -254,20 +258,20 @@
 
     function calculateOptimalSize() {
         const deviceInfo = getDeviceInfo();
-        let optimalBlockSize = 20;
+        let optimalBlockSize = 25; // 基本サイズを大きくして見やすく
         
         if (deviceInfo.isMobile) {
-            // モバイル：画面幅の70%を12列で割る（小さくして余裕を持たせる）
-            optimalBlockSize = Math.floor((deviceInfo.width * 0.7) / COLS);
-            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 20), 12);
+            // モバイル：画面幅の75%を10列で割る
+            optimalBlockSize = Math.floor((deviceInfo.width * 0.75) / COLS);
+            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 30), 18);
         } else if (deviceInfo.isTablet) {
             // タブレット：少し大きめ
             optimalBlockSize = Math.floor((deviceInfo.width * 0.6) / COLS);
-            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 35), 20);
-        } else {
-            // デスクトップ：さらに大きく
-            optimalBlockSize = Math.floor((deviceInfo.height * 0.7) / ROWS);
             optimalBlockSize = Math.max(Math.min(optimalBlockSize, 40), 25);
+        } else {
+            // デスクトップ：大きく表示
+            optimalBlockSize = Math.floor((deviceInfo.height * 0.75) / ROWS);
+            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 45), 30);
         }
         
         return optimalBlockSize;
