@@ -27,8 +27,10 @@
     h1, h2, h3 { margin: 10px 0; text-align: center; }
 
     .score {
-        font-size: 1.5em;
-        margin-bottom: 10px;
+        font-size: 1.8em;
+        margin-bottom: 15px;
+        text-align: center;
+        font-weight: bold;
     }
 
     .homeScreen {
@@ -58,15 +60,18 @@
     }
 
     .control-button, .mode-button, .resume-button, .home-button, .pause-button, .overlay-back-button, .reset-button {
-        font-size: 18px;
-        padding: 10px 15px;
-        margin: 5px;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 15px 25px;
+        margin: 8px;
         background-color: #3498db;
         color: white;
         border: none;
-        border-radius: 5px;
+        border-radius: 8px;
         cursor: pointer;
         transition: background-color 0.3s ease;
+        min-width: 60px;
+        min-height: 60px;
     }
 
     .control-button:hover, .mode-button:hover, .resume-button:hover, .home-button:hover, .pause-button:hover, .overlay-back-button:hover, .reset-button:hover {
@@ -78,17 +83,55 @@
     }
 
     .pause-button {
-        width: 50px;
-        height: 50px;
+        width: 70px;
+        height: 70px;
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
+        z-index: 5;
     }
 
     .mode-buttons {
         display: flex;
         justify-content: center;
         gap: 20px;
+    }
+
+    .game-controls-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 30px;
+        width: 100%;
+        max-width: 800px;
+    }
+
+    .game-content {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .game-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        margin-left: 30px;
+    }
+
+    .next-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .next-block-box {
+        border: 3px solid #34495e;
+        background-color: #111;
+        border-radius: 8px;
+        padding: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
     }
 
     #message-overlay, #pause-menu {
@@ -123,21 +166,6 @@
         display: none;
     }
 
-    .game-controls-top {
-        display: flex;
-        align-items: flex-start;
-        gap: 20px;
-        width: 100%;
-        max-width: 600px;
-    }
-
-    .game-info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-
     .hamburger-icon {
         display: flex;
         flex-direction: column;
@@ -153,6 +181,144 @@
         background-color: white;
         margin: 2px 0;
         border-radius: 1px;
+    }
+
+    @media (max-width: 768px) {
+        /* ホーム画面でゲーム要素を完全に隠す */
+        body:not(.game-active) .gameScreen {
+            display: none !important;
+        }
+        
+        body:not(.game-active) #game-controls {
+            display: none !important;
+        }
+        
+        /* ゲーム画面でホーム画面を完全に隠す */
+        body.game-active .homeScreen {
+            display: none !important;
+        }
+        
+        /* ゲーム画面が表示されている時のスタイル */
+        body.game-active .gameScreen {
+            display: flex !important;
+            width: 100%;
+            max-width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            padding: 3px;
+            box-sizing: border-box;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        body.game-active .game-controls-top {
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 10px;
+            padding: 5px;
+            height: auto;
+            overflow: hidden;
+        }
+        
+        body.game-active .game-content {
+            flex-shrink: 0;
+        }
+        
+        body.game-active .game-info {
+            margin-left: 10px;
+            order: 0;
+            margin-bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        body.game-active .next-container {
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        body.game-active .next-block-box {
+            padding: 4px;
+        }
+        
+        body.game-active .next-block-box canvas {
+            width: 60px !important;
+            height: 60px !important;
+        }
+        
+        body.game-active .pause-button {
+            width: 40px;
+            height: 40px;
+        }
+        
+        body.game-active .control-button {
+            font-size: 16px;
+            padding: 8px;
+            width: 45px;
+            height: 45px;
+            min-width: 45px;
+            min-height: 45px;
+            margin: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        body.game-active .score {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        
+        body {
+            padding: 0;
+        }
+        
+        /* ゲーム中のみ操作ボタンを表示 */
+        body.game-active #game-controls {
+            position: fixed !important;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(44, 62, 80, 0.95);
+            border-radius: 6px;
+            padding: 5px;
+            gap: 5px;
+            display: flex !important;
+            flex-direction: row;
+            justify-content: center;
+            max-width: 90%;
+            flex-wrap: nowrap;
+        }
+        
+        body.game-active .hamburger-icon {
+            width: 16px;
+            height: 16px;
+        }
+        
+        body.game-active .hamburger-line {
+            width: 12px;
+            height: 2px;
+        }
+        
+        /* ホーム画面のスタイルを確実に適用 */
+        body:not(.game-active) .homeScreen {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            width: 100% !important;
+            height: 100vh !important;
+        }
+        
+        body:not(.game-active) .homeScreen .mode-buttons {
+            display: flex !important;
+            justify-content: center !important;
+            gap: 20px !important;
+        }
     }
   </style>
 </head>
@@ -180,7 +346,10 @@
             <div class="hamburger-line"></div>
           </div>
         </button>
-        <div class="score">スコア: <span id="score">0</span></div>
+        <div class="score">
+          スコア: <span id="score">0</span><br>
+          最大コンボ: <span id="max-combo">0</span>
+        </div>
         <div class="next-container">
           <div class="next-block-box">
             <canvas id="next-block-1" width="120" height="120"></canvas>
@@ -229,6 +398,7 @@
     const nextCanvas2 = document.getElementById('next-block-2');
     const nextContext2 = nextCanvas2.getContext('2d');
     const scoreElement = document.getElementById('score');
+    const maxComboElement = document.getElementById('max-combo');
     const pauseMenu = document.getElementById('pause-menu');
     const messageOverlay = document.getElementById('message-overlay');
     const messageText = document.getElementById('message-text');
@@ -239,8 +409,8 @@
 
     // --------------------- Constants ---------------------
     let BLOCK_SIZE = 20;
-    const COLS = 10; // 12 → 10に変更
-    const ROWS = 20; // 24 → 20に変更
+    const COLS = 10;
+    const ROWS = 20;
     const INITIAL_DROP_INTERVAL = 1000;
     const DROP_SPEED_INCREMENT = 20;
     const MIN_DROP_INTERVAL = 100;
@@ -258,18 +428,16 @@
 
     function calculateOptimalSize() {
         const deviceInfo = getDeviceInfo();
-        let optimalBlockSize = 25; // 基本サイズを大きくして見やすく
+        let optimalBlockSize = 25;
         
         if (deviceInfo.isMobile) {
-            // モバイル：画面幅の65%を10列で割る（さらに小さく調整）
-            optimalBlockSize = Math.floor((deviceInfo.width * 0.65) / COLS);
-            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 25), 16);
+            // モバイル：もっと小さくしてUIが崩れないように
+            optimalBlockSize = Math.floor((deviceInfo.width * 0.5) / COLS);
+            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 18), 12);
         } else if (deviceInfo.isTablet) {
-            // タブレット：少し大きめ
             optimalBlockSize = Math.floor((deviceInfo.width * 0.6) / COLS);
             optimalBlockSize = Math.max(Math.min(optimalBlockSize, 40), 25);
         } else {
-            // デスクトップ：大きく表示
             optimalBlockSize = Math.floor((deviceInfo.height * 0.75) / ROWS);
             optimalBlockSize = Math.max(Math.min(optimalBlockSize, 45), 30);
         }
@@ -285,7 +453,6 @@
         canvas.width = gameWidth;
         canvas.height = gameHeight;
         
-        // Next canvas サイズも調整（大きくして見やすく）
         const nextSize = Math.max(120, BLOCK_SIZE * 5);
         nextCanvas1.width = nextSize;
         nextCanvas1.height = nextSize;
@@ -305,6 +472,9 @@
     let dropInterval = INITIAL_DROP_INTERVAL;
     let lastTime = 0;
     let animationFrameId;
+    let combo = 0;
+    let maxCombo = 0;
+    let particles = [];
 
     // --------------------- Tetrominos ---------------------
     const tetrominos = [
@@ -364,7 +534,120 @@
         return false;
     }
 
+    // --------------------- Particle System ---------------------
+    class Particle {
+        constructor(x, y, color, type = 'spark') {
+            this.x = x;
+            this.y = y;
+            this.vx = (Math.random() - 0.5) * 8;
+            this.vy = Math.random() * -6 - 2;
+            this.color = color;
+            this.life = 1.0;
+            this.decay = Math.random() * 0.02 + 0.01;
+            this.size = Math.random() * 4 + 2;
+            this.type = type;
+        }
+
+        update() {
+            this.x += this.vx;
+            this.y += this.vy;
+            this.vy += 0.2;
+            this.life -= this.decay;
+        }
+
+        draw(ctx) {
+            if (this.life <= 0) return;
+            
+            ctx.save();
+            ctx.globalAlpha = this.life;
+            ctx.fillStyle = this.color;
+            
+            if (this.type === 'lightning') {
+                ctx.fillRect(this.x - 1, this.y - 3, 2, 6);
+                ctx.fillRect(this.x - 3, this.y - 1, 6, 2);
+            } else {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.restore();
+        }
+
+        isDead() {
+            return this.life <= 0;
+        }
+    }
+
+    function createLineEffect(lineY, linesCount, comboLevel) {
+        const effectColors = ['#ffffff', '#00ffff', '#ffff00', '#ff00ff', '#ff6600'];
+        let effectType = Math.min(linesCount - 1, 3);
+        if (comboLevel >= 5) effectType = 4;
+
+        const color = effectColors[effectType];
+        const particleType = linesCount >= 2 ? 'lightning' : 'spark';
+        
+        for (let x = 0; x < COLS; x++) {
+            for (let i = 0; i < linesCount + comboLevel; i++) {
+                particles.push(new Particle(
+                    x * BLOCK_SIZE + BLOCK_SIZE/2,
+                    lineY * BLOCK_SIZE + BLOCK_SIZE/2,
+                    color,
+                    particleType
+                ));
+            }
+        }
+
+        if (comboLevel >= 3) {
+            screenShake(comboLevel);
+        }
+
+        setTimeout(() => flashLine(lineY, color), 50);
+    }
+
+    function flashLine(y, color) {
+        context.save();
+        context.fillStyle = color;
+        context.globalAlpha = 0.8;
+        context.fillRect(0, y * BLOCK_SIZE, canvas.width, BLOCK_SIZE);
+        context.restore();
+    }
+
+    function screenShake(intensity) {
+        const originalTransform = canvas.style.transform;
+        let shakeCount = intensity * 2;
+        
+        const shake = () => {
+            if (shakeCount <= 0) {
+                canvas.style.transform = originalTransform;
+                return;
+            }
+            
+            const x = (Math.random() - 0.5) * intensity;
+            const y = (Math.random() - 0.5) * intensity;
+            canvas.style.transform = `translate(${x}px, ${y}px)`;
+            
+            shakeCount--;
+            setTimeout(shake, 50);
+        };
+        
+        shake();
+    }
+
+    function updateParticles() {
+        for (let i = particles.length - 1; i >= 0; i--) {
+            particles[i].update();
+            if (particles[i].isDead()) {
+                particles.splice(i, 1);
+            }
+        }
+    }
+
+    function drawParticles() {
+        particles.forEach(particle => particle.draw(context));
+    }
+
     function fixBlock(){
+        // ブロックを盤面に固定
         for(let y=0;y<currentBlock.matrix.length;y++){
             for(let x=0;x<currentBlock.matrix[y].length;x++){
                 if(currentBlock.matrix[y][x]!==0){
@@ -372,19 +655,55 @@
                 }
             }
         }
-        let linesCleared = 0;
-        for(let y=ROWS-1;y>=0;){
+        
+        // 完成したラインをチェック（すべて一度に）
+        let linesCleared = [];
+        for(let y=0; y<ROWS; y++){
             if(board[y].every(cell=>cell!==0)){
-                board.splice(y,1);
-                board.unshift(Array(COLS).fill(0));
-                linesCleared++;
-            } else y--;
+                linesCleared.push(y);
+            }
         }
-        if(linesCleared>0){
-            score += 100*linesCleared*linesCleared;
+        
+        if(linesCleared.length > 0){
+            // コンボ更新
+            combo++;
+            if (combo > maxCombo) {
+                maxCombo = combo;
+                maxComboElement.textContent = maxCombo;
+            }
+            
+            // エフェクト作成
+            linesCleared.forEach(lineY => {
+                createLineEffect(lineY, linesCleared.length, Math.min(combo, 5));
+            });
+            
+            // ラインを削除してから新しいラインを上に追加
+            // 下から上の順番で処理する必要がある
+            const sortedLines = linesCleared.sort((a, b) => b - a);
+            
+            // 各ラインを削除
+            for(let i = 0; i < sortedLines.length; i++){
+                board.splice(sortedLines[i], 1);
+            }
+            
+            // 削除したライン数分、上に空のラインを追加
+            for(let i = 0; i < linesCleared.length; i++){
+                board.unshift(Array(COLS).fill(0));
+            }
+            
+            // スコア更新
+            const baseScore = 100 * linesCleared.length * linesCleared.length;
+            const comboBonus = combo * 50;
+            score += baseScore + comboBonus;
             scoreElement.textContent = score;
             dropInterval = Math.max(dropInterval - DROP_SPEED_INCREMENT, MIN_DROP_INTERVAL);
+            
+            console.log(`${linesCleared.length}ライン消去！ コンボ: ${combo}`);
+        } else {
+            combo = 0;
         }
+        
+        // 次のブロック生成
         currentBlock = getNextBlock();
         if(collide(board,currentBlock)) gameOver();
     }
@@ -430,36 +749,32 @@
                     context.lineWidth=2;
                     context.strokeRect((currentBlock.x+x)*BLOCK_SIZE,(currentBlock.y+y)*BLOCK_SIZE,BLOCK_SIZE,BLOCK_SIZE);
                 }
+        
+        drawParticles();
     }
 
     function drawNext(){
         if (nextBlocks.length === 0) return;
         
-        // 1つ目のNext表示
         drawNextBlock(nextContext1, nextBlocks[0], nextCanvas1.width, nextCanvas1.height);
         
-        // 2つ目のNext表示
         if (nextBlocks.length > 1) {
             drawNextBlock(nextContext2, nextBlocks[1], nextCanvas2.width, nextCanvas2.height);
         }
     }
 
     function drawNextBlock(context, block, canvasWidth, canvasHeight) {
-        // 背景
         context.fillStyle = '#111';
         context.fillRect(0, 0, canvasWidth, canvasHeight);
         
-        // グリッド設定
-        const gridCols = 5; // 5x5グリッド
+        const gridCols = 5;
         const gridRows = 5;
         const cellWidth = canvasWidth / gridCols;
         const cellHeight = canvasHeight / gridRows;
         
-        // グリッド線を描画
         context.strokeStyle = '#34495e';
         context.lineWidth = 1;
         
-        // 縦線
         for (let i = 0; i <= gridCols; i++) {
             const x = i * cellWidth;
             context.beginPath();
@@ -468,7 +783,6 @@
             context.stroke();
         }
         
-        // 横線
         for (let i = 0; i <= gridRows; i++) {
             const y = i * cellHeight;
             context.beginPath();
@@ -477,23 +791,19 @@
             context.stroke();
         }
         
-        // ブロックを中央のグリッドに配置
         const blockMatrix = block.matrix;
         const blockCols = blockMatrix[0].length;
         const blockRows = blockMatrix.length;
         
-        // 中央揃えのオフセット計算
         const startCol = Math.floor((gridCols - blockCols) / 2);
         const startRow = Math.floor((gridRows - blockRows) / 2);
         
-        // ブロック描画
         for (let y = 0; y < blockRows; y++) {
             for (let x = 0; x < blockCols; x++) {
                 if (blockMatrix[y][x] !== 0) {
                     const drawX = (startCol + x) * cellWidth;
                     const drawY = (startRow + y) * cellHeight;
                     
-                    // セルの内側に少し余白を持たせて描画
                     const padding = 2;
                     context.fillStyle = block.color;
                     context.fillRect(
@@ -529,6 +839,7 @@
             }
             dropCounter=0;
         }
+        updateParticles();
         drawBoard();
         drawNext();
         animationFrameId = requestAnimationFrame(update);
@@ -569,7 +880,11 @@
         isPaused=false;
         board = Array.from({length: ROWS}, () => Array(COLS).fill(0));
         score = 0;
+        combo = 0;
+        maxCombo = 0;
+        particles = [];
         scoreElement.textContent = score;
+        maxComboElement.textContent = maxCombo;
         nextBlocks=[];
         lastUsedIndex=-1;
         dropInterval = INITIAL_DROP_INTERVAL;
@@ -577,24 +892,31 @@
         currentBlock = getNextBlock();
         pauseMenu.style.display = 'none';
         messageOverlay.style.display = 'none';
+        canvas.style.transform = '';
         update();
     }
 
     // --------------------- Screen Transitions ---------------------
     function showGameScreen() {
         homeScreen.style.display = 'none';
+        homeScreen.classList.add('hidden');
         gameScreen.style.display = 'flex';
+        gameScreen.classList.remove('hidden');
         scoreDisplay.style.display = 'block';
         controls.style.display = 'flex';
-        resizeCanvas(); // キャンバスサイズを調整
+        document.body.classList.add('game-active');
+        resizeCanvas();
         resetGame();
     }
 
     function showHomeScreen() {
         homeScreen.style.display = 'flex';
+        homeScreen.classList.remove('hidden');
         gameScreen.style.display = 'none';
+        gameScreen.classList.add('hidden');
         scoreDisplay.style.display = 'none';
         controls.style.display = 'none';
+        document.body.classList.remove('game-active');
         cancelAnimationFrame(animationFrameId);
         pauseMenu.style.display = 'none';
         messageOverlay.style.display = 'none';
@@ -605,16 +927,6 @@
     document.querySelector(".multiBtn").addEventListener("click", () => {
         showMessage("マルチプレイは準備中！");
     });
-
-    // --------------------- Resize Handler ---------------------
-    window.addEventListener('resize', () => {
-        if (gameScreen.style.display !== 'none') {
-            resizeCanvas();
-        }
-    });
-
-    // --------------------- Initialize ---------------------
-    resizeCanvas(); // 初期化時にサイズ調整
     document.querySelector(".overlay-back-button").addEventListener("click", () => {
         messageOverlay.style.display = 'none';
     });
@@ -690,6 +1002,17 @@
                 break;
         }
     });
+
+    // --------------------- Resize Handler ---------------------
+    window.addEventListener('resize', () => {
+        if (gameScreen.style.display !== 'none') {
+            resizeCanvas();
+        }
+    });
+
+    // --------------------- Initialize ---------------------
+    resizeCanvas();
   </script>
 </body>
 </html>
+        
