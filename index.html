@@ -184,66 +184,53 @@
     }
 
     @media (max-width: 768px) {
-        .gameScreen .game-controls-top {
-            flex-direction: row;
-            align-items: flex-start;
-            justify-content: center;
+        .game-controls-top {
+            flex-direction: column;
+            align-items: center;
             gap: 10px;
             padding: 5px;
-            height: auto;
+            height: 100vh;
+            justify-content: flex-start;
             overflow: hidden;
         }
         
-        .gameScreen .game-content {
+        .game-content {
             flex-shrink: 0;
+            margin-top: 10px;
         }
         
-        .gameScreen .game-info {
-            margin-left: 10px;
-            order: 0;
-            margin-bottom: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
+        .game-info {
+            margin-left: 0;
+            order: -1;
+            margin-bottom: 10px;
         }
         
-        .gameScreen .next-container {
-            flex-direction: column;
-            gap: 8px;
+        .next-container {
+            flex-direction: row;
+            gap: 10px;
         }
         
-        .gameScreen .next-block-box {
-            padding: 4px;
+        .next-block-box canvas {
+            width: 70px !important;
+            height: 70px !important;
         }
         
-        .gameScreen .next-block-box canvas {
-            width: 60px !important;
-            height: 60px !important;
-        }
-        
-        .gameScreen .pause-button {
-            width: 40px;
-            height: 40px;
-        }
-        
-        .gameScreen .control-button {
-            font-size: 16px;
-            padding: 8px;
+        .pause-button {
             width: 45px;
             height: 45px;
-            min-width: 45px;
-            min-height: 45px;
-            margin: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         
-        .gameScreen .score {
-            font-size: 0.9em;
-            margin-bottom: 5px;
-            text-align: center;
+        .control-button {
+            font-size: 18px;
+            padding: 8px 12px;
+            min-width: 45px;
+            min-height: 45px;
+            margin: 3px;
+        }
+        
+        .score {
+            font-size: 1.2em;
+            margin-bottom: 10px;
         }
         
         body {
@@ -255,11 +242,8 @@
             max-width: 100vw;
             height: 100vh;
             overflow: hidden;
-            padding: 3px;
+            padding: 5px;
             box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
         
         #game-controls {
@@ -268,38 +252,19 @@
             left: 50%;
             transform: translateX(-50%);
             background: rgba(44, 62, 80, 0.95);
-            border-radius: 6px;
-            padding: 5px;
+            border-radius: 8px;
+            padding: 8px;
             gap: 5px;
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-            max-width: 90%;
-            flex-wrap: nowrap;
         }
         
-        .gameScreen .hamburger-icon {
+        .hamburger-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .hamburger-line {
             width: 16px;
-            height: 16px;
-        }
-        
-        .gameScreen .hamburger-line {
-            width: 12px;
             height: 2px;
-        }
-        
-        /* ホーム画面はモバイルCSSの影響を受けないように */
-        .homeScreen {
-            display: flex !important;
-            flex-direction: column !important;
-            justify-content: center !important;
-            align-items: center !important;
-        }
-        
-        .homeScreen .mode-buttons {
-            display: flex !important;
-            justify-content: center !important;
-            gap: 20px !important;
         }
     }
   </style>
@@ -413,9 +378,8 @@
         let optimalBlockSize = 25;
         
         if (deviceInfo.isMobile) {
-            // モバイル：もっと小さくしてUIが崩れないように
-            optimalBlockSize = Math.floor((deviceInfo.width * 0.5) / COLS);
-            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 18), 12);
+            optimalBlockSize = Math.floor((deviceInfo.width * 0.65) / COLS);
+            optimalBlockSize = Math.max(Math.min(optimalBlockSize, 25), 16);
         } else if (deviceInfo.isTablet) {
             optimalBlockSize = Math.floor((deviceInfo.width * 0.6) / COLS);
             optimalBlockSize = Math.max(Math.min(optimalBlockSize, 40), 25);
