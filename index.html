@@ -184,7 +184,7 @@
     }
 
     @media (max-width: 768px) {
-        .game-controls-top {
+        .gameScreen .game-controls-top {
             flex-direction: row;
             align-items: flex-start;
             justify-content: center;
@@ -194,11 +194,11 @@
             overflow: hidden;
         }
         
-        .game-content {
+        .gameScreen .game-content {
             flex-shrink: 0;
         }
         
-        .game-info {
+        .gameScreen .game-info {
             margin-left: 10px;
             order: 0;
             margin-bottom: 0;
@@ -208,26 +208,26 @@
             gap: 8px;
         }
         
-        .next-container {
+        .gameScreen .next-container {
             flex-direction: column;
             gap: 8px;
         }
         
-        .next-block-box {
+        .gameScreen .next-block-box {
             padding: 4px;
         }
         
-        .next-block-box canvas {
+        .gameScreen .next-block-box canvas {
             width: 60px !important;
             height: 60px !important;
         }
         
-        .pause-button {
+        .gameScreen .pause-button {
             width: 40px;
             height: 40px;
         }
         
-        .control-button {
+        .gameScreen .control-button {
             font-size: 16px;
             padding: 8px;
             width: 45px;
@@ -240,7 +240,7 @@
             justify-content: center;
         }
         
-        .score {
+        .gameScreen .score {
             font-size: 0.9em;
             margin-bottom: 5px;
             text-align: center;
@@ -272,19 +272,34 @@
             padding: 5px;
             gap: 5px;
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: row;
             justify-content: center;
             max-width: 90%;
+            flex-wrap: nowrap;
         }
         
-        .hamburger-icon {
+        .gameScreen .hamburger-icon {
             width: 16px;
             height: 16px;
         }
         
-        .hamburger-line {
+        .gameScreen .hamburger-line {
             width: 12px;
             height: 2px;
+        }
+        
+        /* ホーム画面はモバイルCSSの影響を受けないように */
+        .homeScreen {
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+        
+        .homeScreen .mode-buttons {
+            display: flex !important;
+            justify-content: center !important;
+            gap: 20px !important;
         }
     }
   </style>
